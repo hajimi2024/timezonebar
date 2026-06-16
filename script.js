@@ -1,16 +1,9 @@
 const UTC_MIN = -11;
 const UTC_MAX = 12;
 
-// 每个整数 UTC 区间只展示一个代表城市/地区。
-// 候选名称按中国用户熟悉程度和跨境广告市场常用程度排序。
-// 当某个地区因季节规则移动到其他 UTC 区间时，自动使用后备地区补位。
 const representativeCandidates = {
-  "-11": [
-    { id: "Pacific/Pago_Pago", city: "中途岛、萨摩亚" }
-  ],
-  "-10": [
-    { id: "Pacific/Honolulu", city: "夏威夷" }
-  ],
+  "-11": [{ id: "Pacific/Pago_Pago", city: "中途岛、萨摩亚" }],
+  "-10": [{ id: "Pacific/Honolulu", city: "夏威夷" }],
   "-9": [
     { id: "America/Anchorage", city: "阿拉斯加州" },
     { id: "America/Adak", city: "阿拉斯加西部、阿留申群岛" }
@@ -44,9 +37,7 @@ const representativeCandidates = {
     { id: "America/Sao_Paulo", city: "巴西、阿根廷、乌拉圭" },
     { id: "America/Argentina/Buenos_Aires", city: "阿根廷、乌拉圭" }
   ],
-  "-2": [
-    { id: "Atlantic/South_Georgia", city: "南乔治亚岛" }
-  ],
+  "-2": [{ id: "Atlantic/South_Georgia", city: "南乔治亚岛" }],
   "-1": [
     { id: "Atlantic/Cape_Verde", city: "佛得角" },
     { id: "Atlantic/Azores", city: "亚速尔群岛" }
@@ -70,25 +61,15 @@ const representativeCandidates = {
     { id: "Europe/Athens", city: "希腊、乌克兰" },
     { id: "Asia/Jerusalem", city: "以色列" }
   ],
-  "4": [
-    { id: "Asia/Dubai", city: "阿联酋、阿曼" }
-  ],
-  "5": [
-    { id: "Asia/Karachi", city: "马尔代夫、乌兹别克斯坦、巴基斯坦" }
-  ],
-  "6": [
-    { id: "Asia/Dhaka", city: "孟加拉国、吉尔吉斯斯坦" }
-  ],
-  "7": [
-    { id: "Asia/Bangkok", city: "泰国、柬埔寨、越南" }
-  ],
+  "4": [{ id: "Asia/Dubai", city: "阿联酋、阿曼" }],
+  "5": [{ id: "Asia/Karachi", city: "马尔代夫、乌兹别克斯坦、巴基斯坦" }],
+  "6": [{ id: "Asia/Dhaka", city: "孟加拉国、吉尔吉斯斯坦" }],
+  "7": [{ id: "Asia/Bangkok", city: "泰国、柬埔寨、越南" }],
   "8": [
     { id: "Asia/Shanghai", city: "北京、香港、台湾" },
     { id: "Asia/Singapore", city: "新加坡、马来西亚" }
   ],
-  "9": [
-    { id: "Asia/Tokyo", city: "日本、韩国" }
-  ],
+  "9": [{ id: "Asia/Tokyo", city: "日本、韩国" }],
   "10": [
     { id: "Australia/Sydney", city: "悉尼、墨尔本" },
     { id: "Australia/Brisbane", city: "澳大利亚东部" }
@@ -127,9 +108,7 @@ let selectedMode = "auto";
 let selectedFixedOffset = 8;
 
 function isValidTimeZone(timeZone) {
-  if (validTimeZoneCache.has(timeZone)) {
-    return validTimeZoneCache.get(timeZone);
-  }
+  if (validTimeZoneCache.has(timeZone)) return validTimeZoneCache.get(timeZone);
 
   try {
     new Intl.DateTimeFormat("en-US", { timeZone }).format();
@@ -170,9 +149,7 @@ function getZonedParts(instant, timeZone) {
   const parts = {};
 
   getFormatter(timeZone).formatToParts(instant).forEach(part => {
-    if (part.type !== "literal") {
-      parts[part.type] = Number(part.value);
-    }
+    if (part.type !== "literal") parts[part.type] = Number(part.value);
   });
 
   return {
@@ -294,9 +271,7 @@ function zonedLocalDateTimeToInstant(target, timeZone) {
   for (const offset of candidateOffsets) {
     const candidate = new Date(localAsUtc - offset * 60000);
 
-    if (partsMatch(getZonedParts(candidate, timeZone), target)) {
-      return candidate;
-    }
+    if (partsMatch(getZonedParts(candidate, timeZone), target)) return candidate;
   }
 
   return null;
@@ -383,6 +358,31 @@ function getRepresentativeCity(offsetHours, instant) {
 
 function getMobileRepresentative(label) {
   return label.split(/[、，,]/)[0].trim();
+}
+
+function applyMobileTableLayout() {
+  const isMobile = window.matchMedia("(max-width:640px)").matches;
+  const headerCells = document.querySelectorAll("#timeTable thead th");
+
+  if (headerCells.length === 3) {
+    headerCells[0].style.width = isMobile ? "22%" : "";
+    headerCells[1].style.width = isMobile ? "30%" : "";
+    headerCells[2].style.width = isMobile ? "48%" : "";
+  }
+
+  rowCache.forEach(({ row }) => {
+    const [utcCell, cityCell, timeCell] = row.children;
+
+    utcCell.style.width = isMobile ? "22%" : "";
+    cityCell.style.width = isMobile ? "30%" : "";
+    timeCell.style.width = isMobile ? "48%" : "";
+
+    cityCell.style.fontSize = isMobile ? "14px" : "";
+    cityCell.style.lineHeight = isMobile ? "1.3" : "";
+    cityCell.style.whiteSpace = isMobile ? "normal" : "";
+    cityCell.style.overflow = isMobile ? "visible" : "";
+    cityCell.style.textOverflow = isMobile ? "clip" : "";
+  });
 }
 
 function enterSimulateMode() {
@@ -484,6 +484,7 @@ function buildTable() {
   });
 
   tbody.appendChild(fragment);
+  applyMobileTableLayout();
 }
 
 function updateTimes() {
@@ -564,6 +565,8 @@ function syncSystemTime() {
   updateSliderFromInstant();
   updateTimes();
 }
+
+window.addEventListener("resize", applyMobileTableLayout);
 
 populateTimezoneSelect();
 buildTable();
