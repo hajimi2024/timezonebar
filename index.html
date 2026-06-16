@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>时区模拟器</title>
-    <link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>时区模拟器</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h2>
@@ -15,7 +14,9 @@
     </svg>
     时区模拟器
   </h2>
+
   <p id="currentMode">当前模式: 系统时间模式</p>
+
   <div class="slider-container">
     <input type="range" id="timeSlider" min="0" max="1439" step="1">
     <div class="ticks">
@@ -23,8 +24,17 @@
       <span>15:00</span><span>18:00</span><span>21:00</span><span>24:00</span>
     </div>
   </div>
-  <button id="toggleFreeze">回到系统时间</button>
+
+  <div class="control-row">
+    <label class="timezone-control" for="timezoneSelect">
+      <span>我的时区</span>
+      <select id="timezoneSelect" aria-label="选择我的时区"></select>
+    </label>
+    <button id="toggleFreeze">回到系统时间</button>
+  </div>
+
   <p id="selectedTime"></p>
+
   <div class="table-wrapper">
     <table id="timeTable">
       <thead>
@@ -33,7 +43,7 @@
       <tbody></tbody>
     </table>
   </div>
-    <script src="script.js"></script>
 
+  <script src="script.js"></script>
 </body>
 </html>
