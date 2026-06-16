@@ -2,47 +2,145 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>时区模拟器</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimezoneBar｜时区模拟器</title>
+  <meta name="description" content="TimezoneBar 在线时区模拟器。">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <h2>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
-      <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path>
-    </svg>
-    时区模拟器
-  </h2>
+<body id="top">
+  <header class="site-header">
+    <div class="site-container header-inner">
+      <a class="site-brand" href="#top" aria-label="TimezoneBar 首页">TimezoneBar</a>
 
-  <p id="currentMode">当前模式: 系统时间模式</p>
+      <nav class="desktop-nav" aria-label="主导航">
+        <a href="#timezone-tool">时区工具</a>
+        <a href="#guide">使用指南</a>
+        <a href="#knowledge">时区知识</a>
+        <a href="#about">关于</a>
+      </nav>
 
-  <div class="slider-container">
-    <input type="range" id="timeSlider" min="0" max="1439" step="1">
-    <div class="ticks">
-      <span>0:00</span><span>3:00</span><span>6:00</span><span>9:00</span><span>12:00</span>
-      <span>15:00</span><span>18:00</span><span>21:00</span><span>24:00</span>
+      <details class="mobile-nav">
+        <summary aria-label="打开导航菜单">菜单</summary>
+        <nav aria-label="移动端导航">
+          <a href="#timezone-tool">时区工具</a>
+          <a href="#guide">使用指南</a>
+          <a href="#knowledge">时区知识</a>
+          <a href="#about">关于</a>
+        </nav>
+      </details>
     </div>
-  </div>
+  </header>
 
-  <div class="control-row">
-    <label class="timezone-control" for="timezoneSelect">
-      <span>我的时区</span>
-      <select id="timezoneSelect" aria-label="选择我的时区"></select>
-    </label>
-    <button id="toggleFreeze">回到系统时间</button>
-  </div>
+  <section class="hero-section" aria-labelledby="heroTitle">
+    <div class="site-container hero-inner">
+      <h1 id="heroTitle">TimezoneBar</h1>
+    </div>
+  </section>
 
-  <p id="selectedTime"></p>
+  <main>
+    <section class="tool-section" id="timezone-tool" aria-labelledby="toolTitle">
+      <div class="site-container">
+        <article class="tool-card">
+          <header class="tool-header">
+            <h2 id="toolTitle">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
+                <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path>
+              </svg>
+              时区模拟器
+            </h2>
+          </header>
 
-  <div class="table-wrapper">
-    <table id="timeTable">
-      <thead>
-        <tr><th>UTC</th><th>代表城市/地区</th><th>Time&#65288;自定义&#65289;</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+          <p id="currentMode" class="mode-status" aria-live="polite">
+            当前模式: 系统时间模式
+          </p>
+
+          <div class="slider-container">
+            <label class="sr-only" for="timeSlider">调整模拟时间</label>
+            <input
+              type="range"
+              id="timeSlider"
+              min="0"
+              max="1439"
+              step="1"
+              aria-label="调整模拟时间"
+            >
+            <div class="ticks" aria-hidden="true">
+              <span>0:00</span><span>3:00</span><span>6:00</span>
+              <span>9:00</span><span>12:00</span><span>15:00</span>
+              <span>18:00</span><span>21:00</span><span>24:00</span>
+            </div>
+          </div>
+
+          <div class="control-row">
+            <label class="timezone-control" for="timezoneSelect">
+              <span>我的时区</span>
+              <select id="timezoneSelect" aria-label="选择我的时区"></select>
+            </label>
+            <button id="toggleFreeze" type="button">回到系统时间</button>
+          </div>
+
+          <p id="selectedTime" class="selected-time" aria-live="polite"></p>
+
+          <div class="table-wrapper">
+            <table id="timeTable">
+              <caption class="sr-only">全球主要 UTC 区间时间对照表</caption>
+              <thead>
+                <tr>
+                  <th scope="col">UTC</th>
+                  <th scope="col">代表城市/地区</th>
+                  <th scope="col">Time（自定义）</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="content-area">
+      <section class="content-section" id="guide" aria-labelledby="guideTitle">
+        <div class="site-container content-inner">
+          <h2 id="guideTitle">使用指南</h2>
+        </div>
+      </section>
+
+      <section class="content-section content-section--alternate" id="knowledge" aria-labelledby="knowledgeTitle">
+        <div class="site-container content-inner">
+          <h2 id="knowledgeTitle">时区知识</h2>
+        </div>
+      </section>
+
+      <section class="content-section" id="about" aria-labelledby="aboutTitle">
+        <div class="site-container content-inner">
+          <h2 id="aboutTitle">关于 TimezoneBar</h2>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-container footer-inner">
+      <div>
+        <a class="footer-brand" href="#top">TimezoneBar</a>
+        <p>© 2026 TimezoneBar</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="#timezone-tool">时区工具</a>
+        <a href="#guide">使用指南</a>
+        <a href="#knowledge">时区知识</a>
+        <a href="#about">关于</a>
+        <a href="https://github.com/hajimi2024/timezonebar" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>

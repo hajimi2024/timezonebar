@@ -1,87 +1,195 @@
 const UTC_MIN = -11;
 const UTC_MAX = 12;
 
-const representativeCandidates = {
-  "-11": [{ id: "Pacific/Pago_Pago", city: "中途岛、萨摩亚" }],
-  "-10": [{ id: "Pacific/Honolulu", city: "夏威夷" }],
+const representativeGroups = {
+  "-11": [
+    [{ id: "Pacific/Pago_Pago", label: "中途岛" }]
+  ],
+  "-10": [
+    [{ id: "Pacific/Honolulu", label: "夏威夷" }]
+  ],
   "-9": [
-    { id: "America/Anchorage", city: "阿拉斯加州" },
-    { id: "America/Adak", city: "阿拉斯加西部、阿留申群岛" }
+    [{ id: "America/Anchorage", label: "阿拉斯加州" }],
+    [
+      { id: "America/Adak", label: "阿拉斯加西部" },
+      { id: "America/Adak", label: "阿留申群岛" }
+    ]
   ],
   "-8": [
-    { id: "America/Los_Angeles", city: "加利福尼亚州、俄勒冈州" },
-    { id: "America/Anchorage", city: "阿拉斯加州" },
-    { id: "Pacific/Pitcairn", city: "皮特凯恩群岛" }
+    [
+      { id: "America/Los_Angeles", label: "加利福尼亚州" },
+      { id: "America/Los_Angeles", label: "俄勒冈州" }
+    ],
+    [{ id: "America/Anchorage", label: "阿拉斯加州" }],
+    [{ id: "Pacific/Pitcairn", label: "皮特凯恩群岛" }]
   ],
   "-7": [
-    { id: "America/Los_Angeles", city: "加利福尼亚州、俄勒冈州" },
-    { id: "America/Denver", city: "科罗拉多州、新墨西哥州" },
-    { id: "America/Phoenix", city: "亚利桑那州" }
+    [
+      { id: "America/Los_Angeles", label: "加利福尼亚州" },
+      { id: "America/Los_Angeles", label: "俄勒冈州" }
+    ],
+    [
+      { id: "America/Denver", label: "科罗拉多州" },
+      { id: "America/Denver", label: "新墨西哥州" }
+    ],
+    [{ id: "America/Phoenix", label: "亚利桑那州" }]
   ],
   "-6": [
-    { id: "America/Chicago", city: "得克萨斯州、密西西比州" },
-    { id: "America/Denver", city: "科罗拉多州、新墨西哥州" },
-    { id: "America/Guatemala", city: "墨西哥中部、中美洲" }
+    [
+      { id: "America/Chicago", label: "得克萨斯州" },
+      { id: "America/Chicago", label: "密西西比州" }
+    ],
+    [
+      { id: "America/Denver", label: "科罗拉多州" },
+      { id: "America/Denver", label: "新墨西哥州" }
+    ],
+    [
+      { id: "America/Mexico_City", label: "墨西哥中部" },
+      { id: "America/Guatemala", label: "中美洲" }
+    ]
   ],
   "-5": [
-    { id: "America/New_York", city: "纽约、新泽西州、宾夕法尼亚州" },
-    { id: "America/Chicago", city: "得克萨斯州、密西西比州" },
-    { id: "America/Bogota", city: "哥伦比亚、秘鲁" }
+    [
+      { id: "America/New_York", label: "纽约" },
+      { id: "America/New_York", label: "新泽西州" },
+      { id: "America/New_York", label: "宾夕法尼亚州" }
+    ],
+    [
+      { id: "America/Chicago", label: "得克萨斯州" },
+      { id: "America/Chicago", label: "密西西比州" }
+    ],
+    [
+      { id: "America/Bogota", label: "哥伦比亚" },
+      { id: "America/Lima", label: "秘鲁" }
+    ]
   ],
   "-4": [
-    { id: "America/New_York", city: "纽约、华盛顿、佛罗里达州" },
-    { id: "America/Toronto", city: "多伦多" },
-    { id: "America/Santo_Domingo", city: "加勒比地区" }
+    [
+      { id: "America/New_York", label: "纽约" },
+      { id: "America/New_York", label: "华盛顿" },
+      { id: "America/New_York", label: "佛罗里达州东部" }
+    ],
+    [{ id: "America/Toronto", label: "多伦多" }],
+    [{ id: "America/Santo_Domingo", label: "加勒比地区" }]
   ],
   "-3": [
-    { id: "America/Sao_Paulo", city: "巴西、阿根廷、乌拉圭" },
-    { id: "America/Argentina/Buenos_Aires", city: "阿根廷、乌拉圭" }
+    [
+      { id: "America/Sao_Paulo", label: "巴西" },
+      { id: "America/Argentina/Buenos_Aires", label: "阿根廷" },
+      { id: "America/Montevideo", label: "乌拉圭" }
+    ]
   ],
-  "-2": [{ id: "Atlantic/South_Georgia", city: "南乔治亚岛" }],
+  "-2": [
+    [{ id: "Atlantic/South_Georgia", label: "南乔治亚岛" }]
+  ],
   "-1": [
-    { id: "Atlantic/Cape_Verde", city: "佛得角" },
-    { id: "Atlantic/Azores", city: "亚速尔群岛" }
+    [{ id: "Atlantic/Cape_Verde", label: "佛得角" }],
+    [{ id: "Atlantic/Azores", label: "亚速尔群岛" }]
   ],
   "0": [
-    { id: "Atlantic/Reykjavik", city: "冰岛、格林威治标准时间" },
-    { id: "Africa/Accra", city: "西非" }
+    [
+      { id: "Atlantic/Reykjavik", label: "冰岛" },
+      { id: "Etc/GMT", label: "格林威治标准时间" }
+    ],
+    [{ id: "Africa/Accra", label: "西非" }]
   ],
   "1": [
-    { id: "Europe/Paris", city: "德国、法国、比利时" },
-    { id: "Europe/London", city: "伦敦" },
-    { id: "Africa/Lagos", city: "西非" }
+    [
+      { id: "Europe/Berlin", label: "德国" },
+      { id: "Europe/Paris", label: "法国" },
+      { id: "Europe/Brussels", label: "比利时" }
+    ],
+    [{ id: "Europe/London", label: "伦敦" }],
+    [{ id: "Africa/Lagos", label: "西非" }]
   ],
   "2": [
-    { id: "Europe/Athens", city: "希腊、立陶宛、乌克兰" },
-    { id: "Europe/Paris", city: "德国、法国、比利时" },
-    { id: "Africa/Johannesburg", city: "南非" }
+    [
+      { id: "Europe/Athens", label: "希腊" },
+      { id: "Europe/Vilnius", label: "立陶宛" },
+      { id: "Europe/Kyiv", label: "乌克兰" }
+    ],
+    [
+      { id: "Europe/Berlin", label: "德国" },
+      { id: "Europe/Paris", label: "法国" },
+      { id: "Europe/Brussels", label: "比利时" }
+    ],
+    [{ id: "Africa/Johannesburg", label: "南非" }]
   ],
   "3": [
-    { id: "Europe/Moscow", city: "莫斯科、土耳其、沙特阿拉伯" },
-    { id: "Europe/Athens", city: "希腊、乌克兰" },
-    { id: "Asia/Jerusalem", city: "以色列" }
+    [
+      { id: "Europe/Moscow", label: "莫斯科" },
+      { id: "Europe/Istanbul", label: "土耳其" },
+      { id: "Asia/Riyadh", label: "沙特阿拉伯" }
+    ],
+    [
+      { id: "Europe/Athens", label: "希腊" },
+      { id: "Europe/Kyiv", label: "乌克兰" }
+    ],
+    [{ id: "Asia/Jerusalem", label: "以色列" }]
   ],
-  "4": [{ id: "Asia/Dubai", city: "阿联酋、阿曼" }],
-  "5": [{ id: "Asia/Karachi", city: "马尔代夫、乌兹别克斯坦、巴基斯坦" }],
-  "6": [{ id: "Asia/Dhaka", city: "孟加拉国、吉尔吉斯斯坦" }],
-  "7": [{ id: "Asia/Bangkok", city: "泰国、柬埔寨、越南" }],
+  "4": [
+    [
+      { id: "Asia/Dubai", label: "阿联酋" },
+      { id: "Asia/Muscat", label: "阿曼" }
+    ]
+  ],
+  "5": [
+    [
+      { id: "Indian/Maldives", label: "马尔代夫" },
+      { id: "Asia/Tashkent", label: "乌兹别克斯坦" },
+      { id: "Asia/Karachi", label: "巴基斯坦" }
+    ]
+  ],
+  "6": [
+    [
+      { id: "Asia/Dhaka", label: "孟加拉国" },
+      { id: "Asia/Bishkek", label: "吉尔吉斯斯坦" }
+    ]
+  ],
+  "7": [
+    [
+      { id: "Asia/Bangkok", label: "泰国" },
+      { id: "Asia/Phnom_Penh", label: "柬埔寨" },
+      { id: "Asia/Ho_Chi_Minh", label: "越南" }
+    ]
+  ],
   "8": [
-    { id: "Asia/Shanghai", city: "北京、香港、台湾" },
-    { id: "Asia/Singapore", city: "新加坡、马来西亚" }
+    [
+      { id: "Asia/Shanghai", label: "北京" },
+      { id: "Asia/Hong_Kong", label: "香港" },
+      { id: "Asia/Taipei", label: "台湾" }
+    ],
+    [
+      { id: "Asia/Singapore", label: "新加坡" },
+      { id: "Asia/Kuala_Lumpur", label: "马来西亚" }
+    ]
   ],
-  "9": [{ id: "Asia/Tokyo", city: "日本、韩国" }],
+  "9": [
+    [
+      { id: "Asia/Tokyo", label: "日本" },
+      { id: "Asia/Seoul", label: "韩国" }
+    ]
+  ],
   "10": [
-    { id: "Australia/Sydney", city: "悉尼、墨尔本" },
-    { id: "Australia/Brisbane", city: "澳大利亚东部" }
+    [
+      { id: "Australia/Sydney", label: "悉尼" },
+      { id: "Australia/Melbourne", label: "墨尔本" },
+      { id: "Australia/Brisbane", label: "布里斯班" }
+    ]
   ],
   "11": [
-    { id: "Australia/Sydney", city: "悉尼、墨尔本" },
-    { id: "Pacific/Guadalcanal", city: "所罗门群岛" }
+    [
+      { id: "Australia/Sydney", label: "悉尼" },
+      { id: "Australia/Melbourne", label: "墨尔本" }
+    ],
+    [{ id: "Pacific/Guadalcanal", label: "所罗门群岛" }]
   ],
   "12": [
-    { id: "Pacific/Auckland", city: "新西兰、斐济" },
-    { id: "Pacific/Fiji", city: "斐济" },
-    { id: "Pacific/Tarawa", city: "太平洋岛屿" }
+    [
+      { id: "Pacific/Auckland", label: "新西兰" },
+      { id: "Pacific/Fiji", label: "斐济" }
+    ],
+    [{ id: "Pacific/Tarawa", label: "太平洋岛屿" }]
   ]
 };
 
@@ -100,15 +208,19 @@ const timezoneSelect = document.getElementById("timezoneSelect");
 const formatterCache = new Map();
 const validTimeZoneCache = new Map();
 const rowCache = new Map();
-const deviceTimeZone = getDeviceTimeZone();
 
+let deviceTimeZone = getDeviceTimeZone();
 let followSystem = true;
 let currentInstant = new Date();
 let selectedMode = "auto";
 let selectedFixedOffset = 8;
+let lastRepresentativeMinute = null;
+let minuteTimer = null;
 
 function isValidTimeZone(timeZone) {
-  if (validTimeZoneCache.has(timeZone)) return validTimeZoneCache.get(timeZone);
+  if (validTimeZoneCache.has(timeZone)) {
+    return validTimeZoneCache.get(timeZone);
+  }
 
   try {
     new Intl.DateTimeFormat("en-US", { timeZone }).format();
@@ -149,7 +261,9 @@ function getZonedParts(instant, timeZone) {
   const parts = {};
 
   getFormatter(timeZone).formatToParts(instant).forEach(part => {
-    if (part.type !== "literal") parts[part.type] = Number(part.value);
+    if (part.type !== "literal") {
+      parts[part.type] = Number(part.value);
+    }
   });
 
   return {
@@ -271,7 +385,9 @@ function zonedLocalDateTimeToInstant(target, timeZone) {
   for (const offset of candidateOffsets) {
     const candidate = new Date(localAsUtc - offset * 60000);
 
-    if (partsMatch(getZonedParts(candidate, timeZone), target)) return candidate;
+    if (partsMatch(getZonedParts(candidate, timeZone), target)) {
+      return candidate;
+    }
   }
 
   return null;
@@ -296,7 +412,9 @@ function resolveAutoLocalTime(target) {
     };
 
     const resolved = zonedLocalDateTimeToInstant(adjusted, deviceTimeZone);
-    if (resolved) return resolved;
+    if (resolved) {
+      return resolved;
+    }
   }
 
   return null;
@@ -317,8 +435,10 @@ function fixedLocalDateTimeToInstant(target, offsetHours) {
 }
 
 function parseFixedDateTime(value, offsetHours) {
-  const match = value.match(/(\d{1,2})月(\d{1,2})日\s*(\d{1,2}):(\d{1,2})/);
-  if (!match) return null;
+  const match = value.match(/^(\d{1,2})月(\d{1,2})日\s+(\d{1,2}):(\d{2})$/);
+  if (!match) {
+    return null;
+  }
 
   const [, month, day, hour, minute] = match.map(Number);
   const currentYear = getFixedOffsetParts(currentInstant, offsetHours).year;
@@ -342,53 +462,32 @@ function parseFixedDateTime(value, offsetHours) {
   }, offsetHours);
 }
 
-function getRepresentativeCity(offsetHours, instant) {
-  const candidates = representativeCandidates[String(offsetHours)] || [];
+function getRepresentativeRegion(offsetHours, instant) {
+  const groups = representativeGroups[String(offsetHours)] || [];
 
-  for (const candidate of candidates) {
-    if (!isValidTimeZone(candidate.id)) continue;
+  for (const group of groups) {
+    const matches = group.filter(entry => {
+      if (!isValidTimeZone(entry.id)) {
+        return false;
+      }
 
-    if (getOffsetMinutes(instant, candidate.id) === offsetHours * 60) {
-      return candidate.city;
+      return getOffsetMinutes(instant, entry.id) === offsetHours * 60;
+    });
+
+    if (matches.length > 0) {
+      return {
+        full: matches.map(entry => entry.label).join("、"),
+        mobile: matches[0].label
+      };
     }
   }
 
-  return candidates.at(-1)?.city || "—";
-}
-
-function getMobileRepresentative(label) {
-  return label.split(/[、，,]/)[0].trim();
-}
-
-function applyMobileTableLayout() {
-  const isMobile = window.matchMedia("(max-width:640px)").matches;
-  const headerCells = document.querySelectorAll("#timeTable thead th");
-
-  if (headerCells.length === 3) {
-    headerCells[0].style.width = isMobile ? "22%" : "";
-    headerCells[1].style.width = isMobile ? "30%" : "";
-    headerCells[2].style.width = isMobile ? "48%" : "";
-  }
-
-  rowCache.forEach(({ row }) => {
-    const [utcCell, cityCell, timeCell] = row.children;
-
-    utcCell.style.width = isMobile ? "22%" : "";
-    cityCell.style.width = isMobile ? "30%" : "";
-    timeCell.style.width = isMobile ? "48%" : "";
-
-    cityCell.style.fontSize = isMobile ? "14px" : "";
-    cityCell.style.lineHeight = isMobile ? "1.3" : "";
-    cityCell.style.whiteSpace = isMobile ? "normal" : "";
-    cityCell.style.overflow = isMobile ? "visible" : "";
-    cityCell.style.textOverflow = isMobile ? "clip" : "";
-  });
+  return { full: "—", mobile: "—" };
 }
 
 function enterSimulateMode() {
   followSystem = false;
   currentMode.textContent = "当前模式: 模拟模式";
-  toggleBtn.textContent = "回到系统时间";
 }
 
 function updateSliderFill() {
@@ -444,26 +543,28 @@ function createUtcRow(offsetHours) {
 
   const input = document.createElement("input");
   input.type = "text";
+  input.inputMode = "numeric";
+  input.autocomplete = "off";
   input.placeholder = "MM月DD日 HH:mm";
   input.setAttribute("aria-label", `自定义${formatOffset(offsetHours)}时间`);
 
-  input.addEventListener("mousedown", enterSimulateMode);
-  input.addEventListener("touchstart", enterSimulateMode, { passive: true });
-  input.addEventListener("focus", enterSimulateMode);
   input.addEventListener("keydown", event => {
-    if (event.key === "Enter") input.blur();
+    if (event.key === "Enter") {
+      input.blur();
+    }
   });
 
   input.addEventListener("blur", () => {
-    const editedInstant = parseFixedDateTime(input.value, offsetHours);
+    const editedInstant = parseFixedDateTime(input.value.trim(), offsetHours);
 
-    if (editedInstant) {
-      currentInstant = editedInstant;
-      updateSliderFromInstant();
-      updateTimes();
-    } else {
+    if (!editedInstant) {
       input.value = formatFixedDateTime(currentInstant, offsetHours);
+      return;
     }
+
+    enterSimulateMode();
+    currentInstant = editedInstant;
+    renderAll({ forceRegions: true });
   });
 
   timeCell.appendChild(input);
@@ -484,7 +585,24 @@ function buildTable() {
   });
 
   tbody.appendChild(fragment);
-  applyMobileTableLayout();
+}
+
+function updateRepresentativeRegions(force = false) {
+  const minuteKey = Math.floor(currentInstant.getTime() / 60000);
+
+  if (!force && minuteKey === lastRepresentativeMinute) {
+    return;
+  }
+
+  utcRows.forEach(zone => {
+    const { fullCity, shortCity } = rowCache.get(zone.offset);
+    const representative = getRepresentativeRegion(zone.offset, currentInstant);
+
+    fullCity.textContent = representative.full;
+    shortCity.textContent = representative.mobile;
+  });
+
+  lastRepresentativeMinute = minuteKey;
 }
 
 function updateTimes() {
@@ -498,17 +616,20 @@ function updateTimes() {
       : null;
 
   utcRows.forEach(zone => {
-    const { row, fullCity, shortCity, input } = rowCache.get(zone.offset);
-    const city = getRepresentativeCity(zone.offset, currentInstant);
+    const { row, input } = rowCache.get(zone.offset);
 
     row.classList.toggle("highlight", zone.offset === highlightedOffset);
-    fullCity.textContent = city;
-    shortCity.textContent = getMobileRepresentative(city);
 
     if (document.activeElement !== input) {
       input.value = formatFixedDateTime(currentInstant, zone.offset);
     }
   });
+}
+
+function renderAll({ forceRegions = false } = {}) {
+  updateSliderFromInstant();
+  updateTimes();
+  updateRepresentativeRegions(forceRegions);
 }
 
 slider.addEventListener("input", () => {
@@ -530,8 +651,7 @@ slider.addEventListener("input", () => {
 
   if (resolved) {
     currentInstant = resolved;
-    updateSliderFromInstant();
-    updateTimes();
+    renderAll({ forceRegions: true });
   }
 });
 
@@ -543,32 +663,48 @@ timezoneSelect.addEventListener("change", () => {
     selectedFixedOffset = Number(timezoneSelect.value);
   }
 
-  updateSliderFromInstant();
-  updateTimes();
+  renderAll();
 });
 
 toggleBtn.addEventListener("click", () => {
+  deviceTimeZone = getDeviceTimeZone();
   selectedMode = "auto";
   timezoneSelect.value = "auto";
   followSystem = true;
   currentMode.textContent = "当前模式: 系统时间模式";
-  toggleBtn.textContent = "回到系统时间";
   currentInstant = new Date();
-  updateSliderFromInstant();
-  updateTimes();
+  renderAll({ forceRegions: true });
 });
 
 function syncSystemTime() {
-  if (!followSystem) return;
+  if (!followSystem) {
+    return;
+  }
 
   currentInstant = new Date();
-  updateSliderFromInstant();
-  updateTimes();
+  renderAll();
 }
 
-window.addEventListener("resize", applyMobileTableLayout);
+function scheduleNextMinuteUpdate() {
+  window.clearTimeout(minuteTimer);
+
+  const now = Date.now();
+  const delay = 60000 - (now % 60000) + 50;
+
+  minuteTimer = window.setTimeout(() => {
+    syncSystemTime();
+    scheduleNextMinuteUpdate();
+  }, delay);
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    syncSystemTime();
+    scheduleNextMinuteUpdate();
+  }
+});
 
 populateTimezoneSelect();
 buildTable();
 syncSystemTime();
-setInterval(syncSystemTime, 1000);
+scheduleNextMinuteUpdate();
