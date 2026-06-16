@@ -52,9 +52,8 @@ const representativeCandidates = {
     { id: "Atlantic/Azores", city: "亚速尔群岛" }
   ],
   "0": [
-    { id: "Europe/London", city: "伦敦、格林威治时间" },
-    { id: "Atlantic/Azores", city: "亚速尔群岛" },
-    { id: "Africa/Accra", city: "格林威治时间、西非" }
+    { id: "Atlantic/Reykjavik", city: "冰岛、格林威治标准时间" },
+    { id: "Africa/Accra", city: "西非" }
   ],
   "1": [
     { id: "Europe/Paris", city: "德国、法国、比利时" },
@@ -382,6 +381,10 @@ function getRepresentativeCity(offsetHours, instant) {
   return candidates.at(-1)?.city || "—";
 }
 
+function getMobileRepresentative(label) {
+  return label.split(/[、，,]/)[0].trim();
+}
+
 function enterSimulateMode() {
   followSystem = false;
   currentMode.textContent = "当前模式: 模拟模式";
@@ -499,7 +502,7 @@ function updateTimes() {
 
     row.classList.toggle("highlight", zone.offset === highlightedOffset);
     fullCity.textContent = city;
-    shortCity.textContent = city;
+    shortCity.textContent = getMobileRepresentative(city);
 
     if (document.activeElement !== input) {
       input.value = formatFixedDateTime(currentInstant, zone.offset);
