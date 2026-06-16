@@ -40,6 +40,10 @@ function formatOffset(offset) {
   return `UTC ${offset >= 0 ? `+${offset}` : offset}`;
 }
 
+function getPrimaryCity(cityList) {
+  return cityList.split(/[、，,]/)[0].trim();
+}
+
 function detectSupportedSystemOffset() {
   const systemOffset = -new Date().getTimezoneOffset() / 60;
   return timezones.reduce((nearest, zone) => {
@@ -135,7 +139,18 @@ function updateTimes() {
     tzCell.textContent = formatOffset(zone.offset);
 
     const cityCell = document.createElement("td");
-    cityCell.textContent = zone.city;
+    cityCell.className = "city-cell";
+
+    const fullCity = document.createElement("span");
+    fullCity.className = "city-full";
+    fullCity.textContent = zone.city;
+
+    const shortCity = document.createElement("span");
+    shortCity.className = "city-short";
+    shortCity.textContent = getPrimaryCity(zone.city);
+
+    cityCell.appendChild(fullCity);
+    cityCell.appendChild(shortCity);
 
     const timeCell = document.createElement("td");
     timeCell.className = "time-cell";
