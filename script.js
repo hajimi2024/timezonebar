@@ -1,105 +1,107 @@
 const UTC_MIN = -11;
 const UTC_MAX = 12;
 
-// 每个整数 UTC 区间只展示一个代表城市。
-// 候选城市按优先级排列：优先显示更常见的广告市场城市，
-// 当该城市因季节规则移动到其他 UTC 区间时，自动使用后备城市补位。
+// 每个整数 UTC 区间只展示一个代表城市/地区。
+// 候选名称按中国用户熟悉程度和跨境广告市场常用程度排序。
+// 当某个地区因季节规则移动到其他 UTC 区间时，自动使用后备地区补位。
 const representativeCandidates = {
   "-11": [
-    { id: "Pacific/Pago_Pago", city: "帕果帕果" }
+    { id: "Pacific/Pago_Pago", city: "中途岛、萨摩亚" }
   ],
   "-10": [
-    { id: "Pacific/Honolulu", city: "檀香山" }
+    { id: "Pacific/Honolulu", city: "夏威夷" }
   ],
   "-9": [
-    { id: "America/Anchorage", city: "安克雷奇" },
-    { id: "Pacific/Gambier", city: "甘比尔群岛" }
+    { id: "America/Anchorage", city: "阿拉斯加州" },
+    { id: "America/Adak", city: "阿拉斯加西部、阿留申群岛" }
   ],
   "-8": [
-    { id: "America/Los_Angeles", city: "洛杉矶" },
-    { id: "America/Anchorage", city: "安克雷奇" },
-    { id: "Pacific/Pitcairn", city: "亚当斯敦" }
+    { id: "America/Los_Angeles", city: "加利福尼亚州、俄勒冈州" },
+    { id: "America/Anchorage", city: "阿拉斯加州" },
+    { id: "Pacific/Pitcairn", city: "皮特凯恩群岛" }
   ],
   "-7": [
-    { id: "America/Los_Angeles", city: "洛杉矶" },
-    { id: "America/Denver", city: "丹佛" },
-    { id: "America/Phoenix", city: "凤凰城" }
+    { id: "America/Los_Angeles", city: "加利福尼亚州、俄勒冈州" },
+    { id: "America/Denver", city: "科罗拉多州、新墨西哥州" },
+    { id: "America/Phoenix", city: "亚利桑那州" }
   ],
   "-6": [
-    { id: "America/Denver", city: "丹佛" },
-    { id: "America/Chicago", city: "芝加哥" },
-    { id: "America/Guatemala", city: "危地马拉城" }
+    { id: "America/Chicago", city: "得克萨斯州、密西西比州" },
+    { id: "America/Denver", city: "科罗拉多州、新墨西哥州" },
+    { id: "America/Guatemala", city: "墨西哥中部、中美洲" }
   ],
   "-5": [
-    { id: "America/Chicago", city: "芝加哥" },
-    { id: "America/New_York", city: "纽约" },
-    { id: "America/Bogota", city: "波哥大" }
+    { id: "America/New_York", city: "纽约、新泽西州、宾夕法尼亚州" },
+    { id: "America/Chicago", city: "得克萨斯州、密西西比州" },
+    { id: "America/Bogota", city: "哥伦比亚、秘鲁" }
   ],
   "-4": [
-    { id: "America/New_York", city: "纽约" },
+    { id: "America/New_York", city: "纽约、华盛顿、佛罗里达州" },
     { id: "America/Toronto", city: "多伦多" },
-    { id: "America/Santo_Domingo", city: "圣多明各" }
+    { id: "America/Santo_Domingo", city: "加勒比地区" }
   ],
   "-3": [
-    { id: "America/Sao_Paulo", city: "圣保罗" },
-    { id: "America/Argentina/Buenos_Aires", city: "布宜诺斯艾利斯" }
+    { id: "America/Sao_Paulo", city: "巴西、阿根廷、乌拉圭" },
+    { id: "America/Argentina/Buenos_Aires", city: "阿根廷、乌拉圭" }
   ],
   "-2": [
     { id: "Atlantic/South_Georgia", city: "南乔治亚岛" }
   ],
   "-1": [
-    { id: "Atlantic/Azores", city: "亚速尔群岛" },
-    { id: "Atlantic/Cape_Verde", city: "普拉亚" }
+    { id: "Atlantic/Cape_Verde", city: "佛得角" },
+    { id: "Atlantic/Azores", city: "亚速尔群岛" }
   ],
   "0": [
-    { id: "Europe/London", city: "伦敦" },
-    { id: "Africa/Accra", city: "阿克拉" }
+    { id: "Europe/London", city: "伦敦、格林威治时间" },
+    { id: "Atlantic/Azores", city: "亚速尔群岛" },
+    { id: "Africa/Accra", city: "格林威治时间、西非" }
   ],
   "1": [
+    { id: "Europe/Paris", city: "德国、法国、比利时" },
     { id: "Europe/London", city: "伦敦" },
-    { id: "Europe/Paris", city: "巴黎" },
-    { id: "Africa/Lagos", city: "拉各斯" }
+    { id: "Africa/Lagos", city: "西非" }
   ],
   "2": [
-    { id: "Europe/Paris", city: "巴黎" },
-    { id: "Europe/Athens", city: "雅典" },
-    { id: "Africa/Johannesburg", city: "约翰内斯堡" }
+    { id: "Europe/Athens", city: "希腊、立陶宛、乌克兰" },
+    { id: "Europe/Paris", city: "德国、法国、比利时" },
+    { id: "Africa/Johannesburg", city: "南非" }
   ],
   "3": [
-    { id: "Europe/Athens", city: "雅典" },
-    { id: "Europe/Moscow", city: "莫斯科" },
-    { id: "Asia/Riyadh", city: "利雅得" }
+    { id: "Europe/Moscow", city: "莫斯科、土耳其、沙特阿拉伯" },
+    { id: "Europe/Athens", city: "希腊、乌克兰" },
+    { id: "Asia/Jerusalem", city: "以色列" }
   ],
   "4": [
-    { id: "Asia/Dubai", city: "迪拜" }
+    { id: "Asia/Dubai", city: "阿联酋、阿曼" }
   ],
   "5": [
-    { id: "Asia/Karachi", city: "卡拉奇" }
+    { id: "Asia/Karachi", city: "马尔代夫、乌兹别克斯坦、巴基斯坦" }
   ],
   "6": [
-    { id: "Asia/Dhaka", city: "达卡" }
+    { id: "Asia/Dhaka", city: "孟加拉国、吉尔吉斯斯坦" }
   ],
   "7": [
-    { id: "Asia/Bangkok", city: "曼谷" }
+    { id: "Asia/Bangkok", city: "泰国、柬埔寨、越南" }
   ],
   "8": [
-    { id: "Asia/Shanghai", city: "北京" },
-    { id: "Asia/Singapore", city: "新加坡" }
+    { id: "Asia/Shanghai", city: "北京、香港、台湾" },
+    { id: "Asia/Singapore", city: "新加坡、马来西亚" }
   ],
   "9": [
-    { id: "Asia/Tokyo", city: "东京" }
+    { id: "Asia/Tokyo", city: "日本、韩国" }
   ],
   "10": [
-    { id: "Australia/Sydney", city: "悉尼" },
-    { id: "Australia/Brisbane", city: "布里斯班" }
+    { id: "Australia/Sydney", city: "悉尼、墨尔本" },
+    { id: "Australia/Brisbane", city: "澳大利亚东部" }
   ],
   "11": [
-    { id: "Australia/Sydney", city: "悉尼" },
-    { id: "Pacific/Guadalcanal", city: "霍尼亚拉" }
+    { id: "Australia/Sydney", city: "悉尼、墨尔本" },
+    { id: "Pacific/Guadalcanal", city: "所罗门群岛" }
   ],
   "12": [
-    { id: "Pacific/Auckland", city: "奥克兰" },
-    { id: "Pacific/Tarawa", city: "塔拉瓦" }
+    { id: "Pacific/Auckland", city: "新西兰、斐济" },
+    { id: "Pacific/Fiji", city: "斐济" },
+    { id: "Pacific/Tarawa", city: "太平洋岛屿" }
   ]
 };
 
