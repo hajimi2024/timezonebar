@@ -1,29 +1,94 @@
-const timezones = [
-  { offset: -11, city: "中途岛" },
-  { offset: -10, city: "夏威夷" },
-  { offset: -9, city: "阿拉斯加州" },
-  { offset: -8, city: "加利福尼亚州、俄勒冈州" },
-  { offset: -7, city: "科罗拉多州、新墨西哥州、亚利桑那州、怀俄明州" },
-  { offset: -6, city: "得克萨斯州、密西西比州、密苏里州、路易斯安那州" },
-  { offset: -5, city: "新泽西州、马萨诸塞州、宾夕法尼亚州、多伦多" },
-  { offset: -4, city: "纽约、华盛顿、佛罗里达州" },
-  { offset: -3, city: "巴西、阿根廷、乌拉圭" },
-  { offset: -2, city: "南乔治亚岛、亚速尔群岛" },
-  { offset: -1, city: "佛得角" },
-  { offset: 0, city: "伦敦、格林威治时间" },
-  { offset: 1, city: "德国、法国、比利时、瑞士、奥地利" },
-  { offset: 2, city: "希腊、立陶宛、乌克兰" },
-  { offset: 3, city: "莫斯科、以色列、土耳其" },
-  { offset: 4, city: "阿联酋、沙特、伊朗" },
-  { offset: 5, city: "马尔代夫、乌兹别克斯坦、巴基斯坦" },
-  { offset: 6, city: "哈萨克斯坦、孟加拉、吉尔吉斯" },
-  { offset: 7, city: "泰国、柬埔寨、越南" },
-  { offset: 8, city: "北京、香港、台湾" },
-  { offset: 9, city: "日本、韩国" },
-  { offset: 10, city: "澳大利亚" },
-  { offset: 11, city: "所罗门群岛" },
-  { offset: 12, city: "新西兰、斐济" }
-];
+const UTC_MIN = -11;
+const UTC_MAX = 12;
+
+const representativeCandidates = {
+  "-11": [{ id: "Pacific/Pago_Pago", city: "中途岛、萨摩亚" }],
+  "-10": [{ id: "Pacific/Honolulu", city: "夏威夷" }],
+  "-9": [
+    { id: "America/Anchorage", city: "阿拉斯加州" },
+    { id: "America/Adak", city: "阿拉斯加西部、阿留申群岛" }
+  ],
+  "-8": [
+    { id: "America/Los_Angeles", city: "加利福尼亚州、俄勒冈州" },
+    { id: "America/Anchorage", city: "阿拉斯加州" },
+    { id: "Pacific/Pitcairn", city: "皮特凯恩群岛" }
+  ],
+  "-7": [
+    { id: "America/Los_Angeles", city: "加利福尼亚州、俄勒冈州" },
+    { id: "America/Denver", city: "科罗拉多州、新墨西哥州" },
+    { id: "America/Phoenix", city: "亚利桑那州" }
+  ],
+  "-6": [
+    { id: "America/Chicago", city: "得克萨斯州、密西西比州" },
+    { id: "America/Denver", city: "科罗拉多州、新墨西哥州" },
+    { id: "America/Guatemala", city: "墨西哥中部、中美洲" }
+  ],
+  "-5": [
+    { id: "America/New_York", city: "纽约、新泽西州、宾夕法尼亚州" },
+    { id: "America/Chicago", city: "得克萨斯州、密西西比州" },
+    { id: "America/Bogota", city: "哥伦比亚、秘鲁" }
+  ],
+  "-4": [
+    { id: "America/New_York", city: "纽约、华盛顿、佛罗里达州" },
+    { id: "America/Toronto", city: "多伦多" },
+    { id: "America/Santo_Domingo", city: "加勒比地区" }
+  ],
+  "-3": [
+    { id: "America/Sao_Paulo", city: "巴西、阿根廷、乌拉圭" },
+    { id: "America/Argentina/Buenos_Aires", city: "阿根廷、乌拉圭" }
+  ],
+  "-2": [{ id: "Atlantic/South_Georgia", city: "南乔治亚岛" }],
+  "-1": [
+    { id: "Atlantic/Cape_Verde", city: "佛得角" },
+    { id: "Atlantic/Azores", city: "亚速尔群岛" }
+  ],
+  "0": [
+    { id: "Atlantic/Reykjavik", city: "冰岛、格林威治标准时间" },
+    { id: "Africa/Accra", city: "西非" }
+  ],
+  "1": [
+    { id: "Europe/Paris", city: "德国、法国、比利时" },
+    { id: "Europe/London", city: "伦敦" },
+    { id: "Africa/Lagos", city: "西非" }
+  ],
+  "2": [
+    { id: "Europe/Athens", city: "希腊、立陶宛、乌克兰" },
+    { id: "Europe/Paris", city: "德国、法国、比利时" },
+    { id: "Africa/Johannesburg", city: "南非" }
+  ],
+  "3": [
+    { id: "Europe/Moscow", city: "莫斯科、土耳其、沙特阿拉伯" },
+    { id: "Europe/Athens", city: "希腊、乌克兰" },
+    { id: "Asia/Jerusalem", city: "以色列" }
+  ],
+  "4": [{ id: "Asia/Dubai", city: "阿联酋、阿曼" }],
+  "5": [{ id: "Asia/Karachi", city: "马尔代夫、乌兹别克斯坦、巴基斯坦" }],
+  "6": [{ id: "Asia/Dhaka", city: "孟加拉国、吉尔吉斯斯坦" }],
+  "7": [{ id: "Asia/Bangkok", city: "泰国、柬埔寨、越南" }],
+  "8": [
+    { id: "Asia/Shanghai", city: "北京、香港、台湾" },
+    { id: "Asia/Singapore", city: "新加坡、马来西亚" }
+  ],
+  "9": [{ id: "Asia/Tokyo", city: "日本、韩国" }],
+  "10": [
+    { id: "Australia/Sydney", city: "悉尼、墨尔本" },
+    { id: "Australia/Brisbane", city: "澳大利亚东部" }
+  ],
+  "11": [
+    { id: "Australia/Sydney", city: "悉尼、墨尔本" },
+    { id: "Pacific/Guadalcanal", city: "所罗门群岛" }
+  ],
+  "12": [
+    { id: "Pacific/Auckland", city: "新西兰、斐济" },
+    { id: "Pacific/Fiji", city: "斐济" },
+    { id: "Pacific/Tarawa", city: "太平洋岛屿" }
+  ]
+};
+
+const utcRows = Array.from(
+  { length: UTC_MAX - UTC_MIN + 1 },
+  (_, index) => ({ offset: UTC_MIN + index })
+);
 
 const slider = document.getElementById("timeSlider");
 const selectedTime = document.getElementById("selectedTime");
@@ -32,62 +97,292 @@ const toggleBtn = document.getElementById("toggleFreeze");
 const currentMode = document.getElementById("currentMode");
 const timezoneSelect = document.getElementById("timezoneSelect");
 
+const formatterCache = new Map();
+const validTimeZoneCache = new Map();
+const rowCache = new Map();
+const deviceTimeZone = getDeviceTimeZone();
+
 let followSystem = true;
 let currentInstant = new Date();
-let selectedOffset = detectSupportedSystemOffset();
+let selectedMode = "auto";
+let selectedFixedOffset = 8;
 
-function formatOffset(offset) {
-  return `UTC ${offset >= 0 ? `+${offset}` : offset}`;
+function isValidTimeZone(timeZone) {
+  if (validTimeZoneCache.has(timeZone)) return validTimeZoneCache.get(timeZone);
+
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone }).format();
+    validTimeZoneCache.set(timeZone, true);
+    return true;
+  } catch {
+    validTimeZoneCache.set(timeZone, false);
+    return false;
+  }
 }
 
-function getPrimaryCity(cityList) {
-  return cityList.split(/[、，,]/)[0].trim();
+function getDeviceTimeZone() {
+  const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return isValidTimeZone(detected) ? detected : "UTC";
 }
 
-function detectSupportedSystemOffset() {
-  const systemOffset = -new Date().getTimezoneOffset() / 60;
-  return timezones.reduce((nearest, zone) => {
-    return Math.abs(zone.offset - systemOffset) < Math.abs(nearest - systemOffset)
-      ? zone.offset
-      : nearest;
-  }, timezones[0].offset);
+function getFormatter(timeZone) {
+  if (!formatterCache.has(timeZone)) {
+    formatterCache.set(
+      timeZone,
+      new Intl.DateTimeFormat("en-CA-u-ca-gregory-nu-latn", {
+        timeZone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23"
+      })
+    );
+  }
+
+  return formatterCache.get(timeZone);
 }
 
-function getZone(offset) {
-  return timezones.find(zone => zone.offset === offset) || timezones[0];
+function getZonedParts(instant, timeZone) {
+  const parts = {};
+
+  getFormatter(timeZone).formatToParts(instant).forEach(part => {
+    if (part.type !== "literal") parts[part.type] = Number(part.value);
+  });
+
+  return {
+    year: parts.year,
+    month: parts.month,
+    day: parts.day,
+    hour: parts.hour,
+    minute: parts.minute,
+    second: parts.second
+  };
 }
 
-function getDateAtOffset(instant, offset) {
-  return new Date(instant.getTime() + offset * 60 * 60 * 1000);
+function getOffsetMinutes(instant, timeZone) {
+  const exactInstant = new Date(Math.floor(instant.getTime() / 1000) * 1000);
+  const parts = getZonedParts(exactInstant, timeZone);
+  const localAsUtc = Date.UTC(
+    parts.year,
+    parts.month - 1,
+    parts.day,
+    parts.hour,
+    parts.minute,
+    parts.second
+  );
+
+  return Math.round((localAsUtc - exactInstant.getTime()) / 60000);
 }
 
-function formatDateTime(instant, offset) {
-  const shifted = getDateAtOffset(instant, offset);
-  const month = String(shifted.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(shifted.getUTCDate()).padStart(2, "0");
-  const hour = String(shifted.getUTCHours()).padStart(2, "0");
-  const min = String(shifted.getUTCMinutes()).padStart(2, "0");
-  return `${month}月${day}日 ${hour}:${min}`;
+function getFixedOffsetParts(instant, offsetHours) {
+  const shifted = new Date(instant.getTime() + offsetHours * 60 * 60 * 1000);
+
+  return {
+    year: shifted.getUTCFullYear(),
+    month: shifted.getUTCMonth() + 1,
+    day: shifted.getUTCDate(),
+    hour: shifted.getUTCHours(),
+    minute: shifted.getUTCMinutes(),
+    second: shifted.getUTCSeconds()
+  };
 }
 
-function formatDateTimeWithYear(instant, offset) {
-  const shifted = getDateAtOffset(instant, offset);
-  const year = shifted.getUTCFullYear();
-  return `${year}年${formatDateTime(instant, offset)}`;
+function getSelectedParts(instant) {
+  return selectedMode === "auto"
+    ? getZonedParts(instant, deviceTimeZone)
+    : getFixedOffsetParts(instant, selectedFixedOffset);
 }
 
-function parseDateTime(str, zoneOffset) {
-  const match = str.match(/(\d{1,2})月(\d{1,2})日\s*(\d{1,2}):(\d{1,2})/);
+function getSelectedOffsetMinutes(instant) {
+  return selectedMode === "auto"
+    ? getOffsetMinutes(instant, deviceTimeZone)
+    : selectedFixedOffset * 60;
+}
+
+function formatOffset(offsetHours) {
+  return `UTC ${offsetHours >= 0 ? `+${offsetHours}` : offsetHours}`;
+}
+
+function formatParts(parts, withYear = false) {
+  const dateText = `${String(parts.month).padStart(2, "0")}月${String(parts.day).padStart(2, "0")}日 ` +
+    `${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
+
+  return withYear ? `${parts.year}年${dateText}` : dateText;
+}
+
+function formatFixedDateTime(instant, offsetHours) {
+  return formatParts(getFixedOffsetParts(instant, offsetHours));
+}
+
+function isValidCalendarDate(year, month, day) {
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day;
+}
+
+function partsMatch(parts, target) {
+  return parts.year === target.year &&
+    parts.month === target.month &&
+    parts.day === target.day &&
+    parts.hour === target.hour &&
+    parts.minute === target.minute;
+}
+
+function zonedLocalDateTimeToInstant(target, timeZone) {
+  const localAsUtc = Date.UTC(
+    target.year,
+    target.month - 1,
+    target.day,
+    target.hour,
+    target.minute,
+    0,
+    0
+  );
+
+  let guess = localAsUtc;
+
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const offset = getOffsetMinutes(new Date(guess), timeZone);
+    const nextGuess = localAsUtc - offset * 60000;
+
+    if (Math.abs(nextGuess - guess) < 1000) {
+      guess = nextGuess;
+      break;
+    }
+
+    guess = nextGuess;
+  }
+
+  const candidateOffsets = new Set([
+    getOffsetMinutes(new Date(guess), timeZone)
+  ]);
+
+  [-720, -360, -180, -120, -60, 0, 60, 120, 180, 360, 720].forEach(delta => {
+    candidateOffsets.add(
+      getOffsetMinutes(new Date(localAsUtc + delta * 60000), timeZone)
+    );
+  });
+
+  for (const offset of candidateOffsets) {
+    const candidate = new Date(localAsUtc - offset * 60000);
+
+    if (partsMatch(getZonedParts(candidate, timeZone), target)) return candidate;
+  }
+
+  return null;
+}
+
+function resolveAutoLocalTime(target) {
+  for (let extraMinutes = 0; extraMinutes <= 180; extraMinutes += 1) {
+    const cursor = new Date(Date.UTC(
+      target.year,
+      target.month - 1,
+      target.day,
+      target.hour,
+      target.minute + extraMinutes
+    ));
+
+    const adjusted = {
+      year: cursor.getUTCFullYear(),
+      month: cursor.getUTCMonth() + 1,
+      day: cursor.getUTCDate(),
+      hour: cursor.getUTCHours(),
+      minute: cursor.getUTCMinutes()
+    };
+
+    const resolved = zonedLocalDateTimeToInstant(adjusted, deviceTimeZone);
+    if (resolved) return resolved;
+  }
+
+  return null;
+}
+
+function fixedLocalDateTimeToInstant(target, offsetHours) {
+  return new Date(
+    Date.UTC(
+      target.year,
+      target.month - 1,
+      target.day,
+      target.hour,
+      target.minute,
+      0,
+      0
+    ) - offsetHours * 60 * 60 * 1000
+  );
+}
+
+function parseFixedDateTime(value, offsetHours) {
+  const match = value.match(/(\d{1,2})月(\d{1,2})日\s*(\d{1,2}):(\d{1,2})/);
   if (!match) return null;
 
-  const [, m, d, h, mi] = match.map(Number);
-  if (m < 1 || m > 12 || d < 1 || d > 31 || h < 0 || h > 23 || mi < 0 || mi > 59) {
+  const [, month, day, hour, minute] = match.map(Number);
+  const currentYear = getFixedOffsetParts(currentInstant, offsetHours).year;
+
+  if (
+    !isValidCalendarDate(currentYear, month, day) ||
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
     return null;
   }
 
-  const currentYearAtZone = getDateAtOffset(currentInstant, zoneOffset).getUTCFullYear();
-  const utcTime = Date.UTC(currentYearAtZone, m - 1, d, h, mi, 0, 0) - zoneOffset * 60 * 60 * 1000;
-  return new Date(utcTime);
+  return fixedLocalDateTimeToInstant({
+    year: currentYear,
+    month,
+    day,
+    hour,
+    minute
+  }, offsetHours);
+}
+
+function getRepresentativeCity(offsetHours, instant) {
+  const candidates = representativeCandidates[String(offsetHours)] || [];
+
+  for (const candidate of candidates) {
+    if (!isValidTimeZone(candidate.id)) continue;
+
+    if (getOffsetMinutes(instant, candidate.id) === offsetHours * 60) {
+      return candidate.city;
+    }
+  }
+
+  return candidates.at(-1)?.city || "—";
+}
+
+function getMobileRepresentative(label) {
+  return label.split(/[、，,]/)[0].trim();
+}
+
+function applyMobileTableLayout() {
+  const isMobile = window.matchMedia("(max-width:640px)").matches;
+  const headerCells = document.querySelectorAll("#timeTable thead th");
+
+  if (headerCells.length === 3) {
+    headerCells[0].style.width = isMobile ? "22%" : "";
+    headerCells[1].style.width = isMobile ? "30%" : "";
+    headerCells[2].style.width = isMobile ? "48%" : "";
+  }
+
+  rowCache.forEach(({ row }) => {
+    const [utcCell, cityCell, timeCell] = row.children;
+
+    utcCell.style.width = isMobile ? "22%" : "";
+    cityCell.style.width = isMobile ? "30%" : "";
+    timeCell.style.width = isMobile ? "48%" : "";
+
+    cityCell.style.fontSize = isMobile ? "14px" : "";
+    cityCell.style.lineHeight = isMobile ? "1.3" : "";
+    cityCell.style.whiteSpace = isMobile ? "normal" : "";
+    cityCell.style.overflow = isMobile ? "visible" : "";
+    cityCell.style.textOverflow = isMobile ? "clip" : "";
+  });
 }
 
 function enterSimulateMode() {
@@ -102,120 +397,158 @@ function updateSliderFill() {
 }
 
 function updateSliderFromInstant() {
-  const selectedDate = getDateAtOffset(currentInstant, selectedOffset);
-  slider.value = selectedDate.getUTCHours() * 60 + selectedDate.getUTCMinutes();
+  const parts = getSelectedParts(currentInstant);
+  slider.value = parts.hour * 60 + parts.minute;
   updateSliderFill();
 }
 
 function populateTimezoneSelect() {
-  const detectedOffset = detectSupportedSystemOffset();
+  timezoneSelect.innerHTML = "";
 
   const autoOption = document.createElement("option");
   autoOption.value = "auto";
-  autoOption.textContent = `自动识别（${formatOffset(detectedOffset)}）`;
+  autoOption.textContent = "自动识别";
   timezoneSelect.appendChild(autoOption);
 
-  timezones.forEach(zone => {
+  utcRows.forEach(zone => {
     const option = document.createElement("option");
     option.value = String(zone.offset);
     option.textContent = formatOffset(zone.offset);
     timezoneSelect.appendChild(option);
   });
 
-  selectedOffset = detectedOffset;
   timezoneSelect.value = "auto";
 }
 
+function createUtcRow(offsetHours) {
+  const row = document.createElement("tr");
+
+  const utcCell = document.createElement("td");
+  utcCell.className = "utc-cell";
+  utcCell.textContent = formatOffset(offsetHours);
+
+  const cityCell = document.createElement("td");
+  cityCell.className = "city-cell";
+
+  const fullCity = document.createElement("span");
+  fullCity.className = "city-full";
+
+  const shortCity = document.createElement("span");
+  shortCity.className = "city-short";
+
+  cityCell.appendChild(fullCity);
+  cityCell.appendChild(shortCity);
+
+  const timeCell = document.createElement("td");
+  timeCell.className = "time-cell";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "MM月DD日 HH:mm";
+  input.setAttribute("aria-label", `自定义${formatOffset(offsetHours)}时间`);
+
+  input.addEventListener("mousedown", enterSimulateMode);
+  input.addEventListener("touchstart", enterSimulateMode, { passive: true });
+  input.addEventListener("focus", enterSimulateMode);
+  input.addEventListener("keydown", event => {
+    if (event.key === "Enter") input.blur();
+  });
+
+  input.addEventListener("blur", () => {
+    const editedInstant = parseFixedDateTime(input.value, offsetHours);
+
+    if (editedInstant) {
+      currentInstant = editedInstant;
+      updateSliderFromInstant();
+      updateTimes();
+    } else {
+      input.value = formatFixedDateTime(currentInstant, offsetHours);
+    }
+  });
+
+  timeCell.appendChild(input);
+  row.appendChild(utcCell);
+  row.appendChild(cityCell);
+  row.appendChild(timeCell);
+
+  return { row, fullCity, shortCity, input };
+}
+
+function buildTable() {
+  const fragment = document.createDocumentFragment();
+
+  utcRows.forEach(zone => {
+    const elements = createUtcRow(zone.offset);
+    rowCache.set(zone.offset, elements);
+    fragment.appendChild(elements.row);
+  });
+
+  tbody.appendChild(fragment);
+  applyMobileTableLayout();
+}
+
 function updateTimes() {
-  selectedTime.textContent = `当前时间: ${formatDateTimeWithYear(currentInstant, selectedOffset)}`;
-  tbody.innerHTML = "";
+  selectedTime.textContent = `当前时间: ${formatParts(getSelectedParts(currentInstant), true)}`;
 
-  timezones.forEach(zone => {
-    const row = document.createElement("tr");
-    if (zone.offset === selectedOffset) row.classList.add("highlight");
+  const selectedOffsetMinutes = getSelectedOffsetMinutes(currentInstant);
+  const highlightedOffset = Number.isInteger(selectedOffsetMinutes / 60) &&
+    selectedOffsetMinutes / 60 >= UTC_MIN &&
+    selectedOffsetMinutes / 60 <= UTC_MAX
+      ? selectedOffsetMinutes / 60
+      : null;
 
-    const tzCell = document.createElement("td");
-    tzCell.className = "utc-cell";
-    tzCell.textContent = formatOffset(zone.offset);
+  utcRows.forEach(zone => {
+    const { row, fullCity, shortCity, input } = rowCache.get(zone.offset);
+    const city = getRepresentativeCity(zone.offset, currentInstant);
 
-    const cityCell = document.createElement("td");
-    cityCell.className = "city-cell";
+    row.classList.toggle("highlight", zone.offset === highlightedOffset);
+    fullCity.textContent = city;
+    shortCity.textContent = getMobileRepresentative(city);
 
-    const fullCity = document.createElement("span");
-    fullCity.className = "city-full";
-    fullCity.textContent = zone.city;
-
-    const shortCity = document.createElement("span");
-    shortCity.className = "city-short";
-    shortCity.textContent = getPrimaryCity(zone.city);
-
-    cityCell.appendChild(fullCity);
-    cityCell.appendChild(shortCity);
-
-    const timeCell = document.createElement("td");
-    timeCell.className = "time-cell";
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = formatDateTime(currentInstant, zone.offset);
-    input.placeholder = "MM月DD日 HH:mm";
-
-    input.addEventListener("mousedown", enterSimulateMode);
-    input.addEventListener("touchstart", enterSimulateMode, { passive: true });
-    input.addEventListener("focus", enterSimulateMode);
-    input.addEventListener("keydown", event => {
-      if (event.key === "Enter") input.blur();
-    });
-
-    input.addEventListener("blur", () => {
-      const editedInstant = parseDateTime(input.value, zone.offset);
-      if (editedInstant) {
-        currentInstant = editedInstant;
-        updateSliderFromInstant();
-        updateTimes();
-      } else {
-        input.value = formatDateTime(currentInstant, zone.offset);
-      }
-    });
-
-    timeCell.appendChild(input);
-    row.appendChild(tzCell);
-    row.appendChild(cityCell);
-    row.appendChild(timeCell);
-    tbody.appendChild(row);
+    if (document.activeElement !== input) {
+      input.value = formatFixedDateTime(currentInstant, zone.offset);
+    }
   });
 }
 
 slider.addEventListener("input", () => {
   enterSimulateMode();
 
-  const selectedDate = getDateAtOffset(currentInstant, selectedOffset);
-  const year = selectedDate.getUTCFullYear();
-  const month = selectedDate.getUTCMonth();
-  const day = selectedDate.getUTCDate();
+  const selectedParts = getSelectedParts(currentInstant);
   const minutes = Number.parseInt(slider.value, 10);
-  const hour = Math.floor(minutes / 60);
-  const minute = minutes % 60;
+  const target = {
+    year: selectedParts.year,
+    month: selectedParts.month,
+    day: selectedParts.day,
+    hour: Math.floor(minutes / 60),
+    minute: minutes % 60
+  };
 
-  currentInstant = new Date(
-    Date.UTC(year, month, day, hour, minute, 0, 0) - selectedOffset * 60 * 60 * 1000
-  );
+  const resolved = selectedMode === "auto"
+    ? resolveAutoLocalTime(target)
+    : fixedLocalDateTimeToInstant(target, selectedFixedOffset);
 
-  updateSliderFill();
-  updateTimes();
+  if (resolved) {
+    currentInstant = resolved;
+    updateSliderFromInstant();
+    updateTimes();
+  }
 });
 
 timezoneSelect.addEventListener("change", () => {
-  selectedOffset = timezoneSelect.value === "auto"
-    ? detectSupportedSystemOffset()
-    : Number(timezoneSelect.value);
+  if (timezoneSelect.value === "auto") {
+    selectedMode = "auto";
+  } else {
+    selectedMode = "fixed";
+    selectedFixedOffset = Number(timezoneSelect.value);
+  }
 
   updateSliderFromInstant();
   updateTimes();
 });
 
 toggleBtn.addEventListener("click", () => {
-  selectedOffset = detectSupportedSystemOffset();
+  selectedMode = "auto";
   timezoneSelect.value = "auto";
   followSystem = true;
   currentMode.textContent = "当前模式: 系统时间模式";
@@ -227,11 +560,15 @@ toggleBtn.addEventListener("click", () => {
 
 function syncSystemTime() {
   if (!followSystem) return;
+
   currentInstant = new Date();
   updateSliderFromInstant();
   updateTimes();
 }
 
+window.addEventListener("resize", applyMobileTableLayout);
+
 populateTimezoneSelect();
+buildTable();
 syncSystemTime();
 setInterval(syncSystemTime, 1000);
