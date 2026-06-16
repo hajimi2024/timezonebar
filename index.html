@@ -3,20 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>时区模拟器</title>
-  <meta
-    name="description"
-    content="面向跨境广告投放、远程协作和海外运营场景的在线时区模拟工具。"
-  >
+  <title>TimezoneBar｜时区模拟器</title>
+  <meta name="description" content="TimezoneBar 在线时区模拟器。">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="site-shell">
-    <main class="page-layout">
-      <section class="tool-section" aria-labelledby="pageTitle">
+<body id="top">
+  <header class="site-header">
+    <div class="site-container header-inner">
+      <a class="site-brand" href="#top" aria-label="TimezoneBar 首页">TimezoneBar</a>
+
+      <nav class="desktop-nav" aria-label="主导航">
+        <a href="#timezone-tool">时区工具</a>
+        <a href="#guide">使用指南</a>
+        <a href="#knowledge">时区知识</a>
+        <a href="#about">关于</a>
+      </nav>
+
+      <details class="mobile-nav">
+        <summary aria-label="打开导航菜单">菜单</summary>
+        <nav aria-label="移动端导航">
+          <a href="#timezone-tool">时区工具</a>
+          <a href="#guide">使用指南</a>
+          <a href="#knowledge">时区知识</a>
+          <a href="#about">关于</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+
+  <section class="hero-section" aria-labelledby="heroTitle">
+    <div class="site-container hero-inner">
+      <h1 id="heroTitle">TimezoneBar</h1>
+    </div>
+  </section>
+
+  <main>
+    <section class="tool-section" id="timezone-tool" aria-labelledby="toolTitle">
+      <div class="site-container">
         <article class="tool-card">
           <header class="tool-header">
-            <h1 id="pageTitle">
+            <h2 id="toolTitle">
               <svg
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
@@ -27,10 +53,7 @@
                 <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path>
               </svg>
               时区模拟器
-            </h1>
-            <p class="tool-intro">
-              快速模拟不同 UTC 区间的日期与时间，减少跨境广告投放和海外协作中的人工换算。
-            </p>
+            </h2>
           </header>
 
           <p id="currentMode" class="mode-status" aria-live="polite">
@@ -78,17 +101,46 @@
             </table>
           </div>
         </article>
+      </div>
+    </section>
 
-        <div class="ad-slot ad-slot--inline" aria-hidden="true"></div>
+    <div class="content-area">
+      <section class="content-section" id="guide" aria-labelledby="guideTitle">
+        <div class="site-container content-inner">
+          <h2 id="guideTitle">使用指南</h2>
+        </div>
       </section>
 
-      <aside class="ad-rail" aria-label="广告位预留">
-        <div class="ad-slot ad-slot--sidebar" aria-hidden="true"></div>
-      </aside>
-    </main>
+      <section class="content-section content-section--alternate" id="knowledge" aria-labelledby="knowledgeTitle">
+        <div class="site-container content-inner">
+          <h2 id="knowledgeTitle">时区知识</h2>
+        </div>
+      </section>
 
-    <section class="content-reserve" aria-hidden="true"></section>
-  </div>
+      <section class="content-section" id="about" aria-labelledby="aboutTitle">
+        <div class="site-container content-inner">
+          <h2 id="aboutTitle">关于 TimezoneBar</h2>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-container footer-inner">
+      <div>
+        <a class="footer-brand" href="#top">TimezoneBar</a>
+        <p>© 2026 TimezoneBar</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="#timezone-tool">时区工具</a>
+        <a href="#guide">使用指南</a>
+        <a href="#knowledge">时区知识</a>
+        <a href="#about">关于</a>
+        <a href="https://github.com/hajimi2024/timezonebar" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>
