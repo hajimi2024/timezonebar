@@ -66,6 +66,12 @@ function formatDateTime(instant, offset) {
   return `${month}月${day}日 ${hour}:${min}`;
 }
 
+function formatDateTimeWithYear(instant, offset) {
+  const shifted = getDateAtOffset(instant, offset);
+  const year = shifted.getUTCFullYear();
+  return `${year}年${formatDateTime(instant, offset)}`;
+}
+
 function parseDateTime(str, zoneOffset) {
   const match = str.match(/(\d{1,2})月(\d{1,2})日\s*(\d{1,2}):(\d{1,2})/);
   if (!match) return null;
@@ -117,7 +123,7 @@ function populateTimezoneSelect() {
 }
 
 function updateTimes() {
-  selectedTime.textContent = `当前时间: ${formatDateTime(currentInstant, selectedOffset)}`;
+  selectedTime.textContent = `当前时间: ${formatDateTimeWithYear(currentInstant, selectedOffset)}`;
   tbody.innerHTML = "";
 
   timezones.forEach(zone => {
