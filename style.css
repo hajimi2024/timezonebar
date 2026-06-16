@@ -75,7 +75,13 @@ input[type=range] {
   -webkit-appearance:none;
   appearance:none;
   width:100%;
+  min-height:32px;
   background:transparent;
+  cursor:grab;
+}
+
+input[type=range]:active {
+  cursor:grabbing;
 }
 
 input[type=range]::-webkit-slider-runnable-track{
@@ -90,28 +96,57 @@ input[type=range]::-moz-range-track{
   background:linear-gradient(to right, var(--text-primary) var(--fill, 0%), rgba(255,255,255,0.2) var(--fill, 0%));
 }
 
+/* V5：3.6 秒周期，缩放范围 0.8 → 1.1 */
+@keyframes slider-thumb-breathe {
+  0%, 100% {
+    transform:scale(0.8);
+    box-shadow:0 0 5px rgba(255,201,76,0.32);
+  }
+  50% {
+    transform:scale(1.1);
+    box-shadow:
+      0 0 12px rgba(255,201,76,0.78),
+      0 0 22px rgba(255,201,76,0.32);
+  }
+}
+
 input[type=range]::-webkit-slider-thumb{
   -webkit-appearance:none;
-  height:16px;
-  width:16px;
+  appearance:none;
+  height:18px;
+  width:18px;
+  border:none;
   border-radius:50%;
   background:var(--text-primary);
-  cursor:pointer;
-  margin-top:-4px;
+  cursor:grab;
+  margin-top:-5px;
   position:relative;
   z-index:2;
-  box-shadow:0 0 6px rgba(255,201,76,0.6);
+  transform-origin:center;
+  animation:slider-thumb-breathe 3.6s ease-in-out infinite;
+  will-change:transform, box-shadow;
+}
+
+input[type=range]:active::-webkit-slider-thumb {
+  cursor:grabbing;
 }
 
 input[type=range]::-moz-range-thumb{
-  height:16px;
-  width:16px;
+  height:18px;
+  width:18px;
+  border:none;
   border-radius:50%;
   background:var(--text-primary);
-  cursor:pointer;
+  cursor:grab;
   position:relative;
   z-index:2;
-  box-shadow:0 0 6px rgba(255,201,76,0.6);
+  transform-origin:center;
+  animation:slider-thumb-breathe 3.6s ease-in-out infinite;
+  will-change:transform, box-shadow;
+}
+
+input[type=range]:active::-moz-range-thumb {
+  cursor:grabbing;
 }
 
 .ticks{
@@ -217,8 +252,35 @@ td.utc-cell{
 
 .city-short { display:none; }
 
+/* 平板端：保留完整布局，扩大滑块可触控区域 */
+@media (min-width:641px) and (max-width:1024px) {
+  input[type=range] {
+    min-height:36px;
+  }
+
+  .ticks {
+    font-size:15px;
+  }
+}
+
+/* 移动端：扩大触控区域，并维持同一呼吸节奏 */
 @media (max-width:640px) {
   body { margin:12px; }
+
+  input[type=range] {
+    min-height:40px;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    height:20px;
+    width:20px;
+    margin-top:-6px;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    height:20px;
+    width:20px;
+  }
 
   .control-row {
     flex-direction:column;
@@ -290,5 +352,14 @@ td.utc-cell{
     font-size:16px;
     white-space:nowrap;
     overflow:visible;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  input[type=range]::-webkit-slider-thumb,
+  input[type=range]::-moz-range-thumb {
+    animation:none;
+    transform:scale(1);
+    box-shadow:0 0 6px rgba(255,201,76,0.6);
   }
 }
