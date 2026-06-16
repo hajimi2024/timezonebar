@@ -37,7 +37,7 @@ let currentInstant = new Date();
 let selectedOffset = detectSupportedSystemOffset();
 
 function formatOffset(offset) {
-  return `UTC${offset >= 0 ? `+${offset}` : offset}`;
+  return `UTC ${offset >= 0 ? `+${offset}` : offset}`;
 }
 
 function detectSupportedSystemOffset() {
@@ -112,14 +112,8 @@ function populateTimezoneSelect() {
     timezoneSelect.appendChild(option);
   });
 
-  const savedTimezone = localStorage.getItem("timezonebar-selected-timezone");
-  if (savedTimezone && savedTimezone !== "auto" && getZone(Number(savedTimezone))) {
-    selectedOffset = Number(savedTimezone);
-    timezoneSelect.value = savedTimezone;
-  } else {
-    selectedOffset = detectedOffset;
-    timezoneSelect.value = "auto";
-  }
+  selectedOffset = detectedOffset;
+  timezoneSelect.value = "auto";
 }
 
 function updateTimes() {
@@ -191,23 +185,23 @@ slider.addEventListener("input", () => {
 });
 
 timezoneSelect.addEventListener("change", () => {
-  if (timezoneSelect.value === "auto") {
-    selectedOffset = detectSupportedSystemOffset();
-    localStorage.setItem("timezonebar-selected-timezone", "auto");
-  } else {
-    selectedOffset = Number(timezoneSelect.value);
-    localStorage.setItem("timezonebar-selected-timezone", timezoneSelect.value);
-  }
+  selectedOffset = timezoneSelect.value === "auto"
+    ? detectSupportedSystemOffset()
+    : Number(timezoneSelect.value);
 
   updateSliderFromInstant();
   updateTimes();
 });
 
 toggleBtn.addEventListener("click", () => {
+  selectedOffset = detectSupportedSystemOffset();
+  timezoneSelect.value = "auto";
   followSystem = true;
   currentMode.textContent = "当前模式: 系统时间模式";
   toggleBtn.textContent = "回到系统时间";
-  syncSystemTime();
+  currentInstant = new Date();
+  updateSliderFromInstant();
+  updateTimes();
 });
 
 function syncSystemTime() {
