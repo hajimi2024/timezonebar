@@ -99,17 +99,16 @@ function updateSliderFromInstant() {
 
 function populateTimezoneSelect() {
   const detectedOffset = detectSupportedSystemOffset();
-  const detectedZone = getZone(detectedOffset);
 
   const autoOption = document.createElement("option");
   autoOption.value = "auto";
-  autoOption.textContent = `自动识别（${formatOffset(detectedOffset)} ${detectedZone.city}）`;
+  autoOption.textContent = `自动识别（${formatOffset(detectedOffset)}）`;
   timezoneSelect.appendChild(autoOption);
 
   timezones.forEach(zone => {
     const option = document.createElement("option");
     option.value = String(zone.offset);
-    option.textContent = `${formatOffset(zone.offset)} ${zone.city}`;
+    option.textContent = formatOffset(zone.offset);
     timezoneSelect.appendChild(option);
   });
 
@@ -124,8 +123,7 @@ function populateTimezoneSelect() {
 }
 
 function updateTimes() {
-  const selectedZone = getZone(selectedOffset);
-  selectedTime.textContent = `我的时间（${formatOffset(selectedOffset)}）：${formatDateTime(currentInstant, selectedOffset)}`;
+  selectedTime.textContent = `当前时间: ${formatDateTime(currentInstant, selectedOffset)}`;
   tbody.innerHTML = "";
 
   timezones.forEach(zone => {
