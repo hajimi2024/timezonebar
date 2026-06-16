@@ -52,12 +52,14 @@ const timezoneSelect = document.getElementById("timezoneSelect");
 
 const formatterCache = new Map();
 const timezoneOptionMap = new Map();
+const rowCache = new Map();
 const deviceTimeZone = getDeviceTimeZone();
 const timeZones = buildTimeZoneList(deviceTimeZone);
 
 let followSystem = true;
 let currentInstant = new Date();
 let selectedTimeZone = deviceTimeZone;
+let lastOrderKey = "";
 
 function getDeviceTimeZone() {
   const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -335,10 +337,73 @@ function refreshTimezoneSelectLabels() {
   });
 }
 
+function createZoneRow(zone) {
+  const row = document.createElement("tr");
+
+  const tzCell = document.createElement("td");
+  tzCell.className = "utc-cell";
+
+  const cityCell = document.createElement("td");
+  cityCell.className = "city-cell";
+  cityCell.title = zone.id;
+
+  const fullCity = document.createElement("span");
+  fullCity.className = "city-full";
+  fullCity.textContent = getZoneFullLabel(zone);
+
+  const shortCity = document.createElement("span");
+  shortCity.className = "city-short";
+  shortCity.textContent = zone.city;
+
+  cityCell.appendChild(fullCity);
+  cityCell.appendChild(shortCity);
+
+  const timeCell = document.createElement("td");
+  timeCell.className = "time-cell";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "MM月DD日 HH:mm";
+  input.setAttribute("aria-label", `自定义${zone.city}时间`);
+
+  input.addEventListener("mousedown", enterSimulateMode);
+  input.addEventListener("touchstart", enterSimulateMode, { passive: true });
+  input.addEventListener("focus", enterSimulateMode);
+  input.addEventListener("keydown", event => {
+    if (event.key === "Enter") input.blur();
+  });
+
+  input.addEventListener("blur", () => {
+    const editedInstant = parseDateTime(input.value, zone.id);
+
+    if (editedInstant) {
+      currentInstant = editedInstant;
+      updateSliderFromInstant();
+      updateTimes();
+    } else {
+      input.value = formatDateTime(currentInstant, zone.id);
+    }
+  });
+
+  timeCell.appendChild(input);
+  row.appendChild(tzCell);
+  row.appendChild(cityCell);
+  row.appendChild(timeCell);
+
+  return { row, tzCell, input };
+}
+
+function getRowElements(zone) {
+  if (!rowCache.has(zone.id)) {
+    rowCache.set(zone.id, createZoneRow(zone));
+  }
+
+  return rowCache.get(zone.id);
+}
+
 function updateTimes() {
   selectedTime.textContent = `当前时间: ${formatDateTimeWithYear(currentInstant, selectedTimeZone)}`;
   refreshTimezoneSelectLabels();
-  tbody.innerHTML = "";
 
   const zonesForDisplay = timeZones
     .map(zone => ({
@@ -353,62 +418,28 @@ function updateTimes() {
       return a.city.localeCompare(b.city, "zh-CN");
     });
 
-  zonesForDisplay.forEach(zone => {
-    const row = document.createElement("tr");
-    if (zone.id === selectedTimeZone) row.classList.add("highlight");
+  const orderKey = zonesForDisplay.map(zone => zone.id).join("|");
 
-    const tzCell = document.createElement("td");
-    tzCell.className = "utc-cell";
+  if (orderKey !== lastOrderKey) {
+    const fragment = document.createDocumentFragment();
+
+    zonesForDisplay.forEach(zone => {
+      fragment.appendChild(getRowElements(zone).row);
+    });
+
+    tbody.appendChild(fragment);
+    lastOrderKey = orderKey;
+  }
+
+  zonesForDisplay.forEach(zone => {
+    const { row, tzCell, input } = getRowElements(zone);
+
+    row.classList.toggle("highlight", zone.id === selectedTimeZone);
     tzCell.textContent = formatOffset(zone.offsetMinutes);
 
-    const cityCell = document.createElement("td");
-    cityCell.className = "city-cell";
-    cityCell.title = zone.id;
-
-    const fullCity = document.createElement("span");
-    fullCity.className = "city-full";
-    fullCity.textContent = getZoneFullLabel(zone);
-
-    const shortCity = document.createElement("span");
-    shortCity.className = "city-short";
-    shortCity.textContent = zone.city;
-
-    cityCell.appendChild(fullCity);
-    cityCell.appendChild(shortCity);
-
-    const timeCell = document.createElement("td");
-    timeCell.className = "time-cell";
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = formatDateTime(currentInstant, zone.id);
-    input.placeholder = "MM月DD日 HH:mm";
-    input.setAttribute("aria-label", `自定义${zone.city}时间`);
-
-    input.addEventListener("mousedown", enterSimulateMode);
-    input.addEventListener("touchstart", enterSimulateMode, { passive: true });
-    input.addEventListener("focus", enterSimulateMode);
-    input.addEventListener("keydown", event => {
-      if (event.key === "Enter") input.blur();
-    });
-
-    input.addEventListener("blur", () => {
-      const editedInstant = parseDateTime(input.value, zone.id);
-
-      if (editedInstant) {
-        currentInstant = editedInstant;
-        updateSliderFromInstant();
-        updateTimes();
-      } else {
-        input.value = formatDateTime(currentInstant, zone.id);
-      }
-    });
-
-    timeCell.appendChild(input);
-    row.appendChild(tzCell);
-    row.appendChild(cityCell);
-    row.appendChild(timeCell);
-    tbody.appendChild(row);
+    if (document.activeElement !== input) {
+      input.value = formatDateTime(currentInstant, zone.id);
+    }
   });
 }
 
