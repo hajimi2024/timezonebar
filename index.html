@@ -2,46 +2,92 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>时区模拟器</title>
+  <meta
+    name="description"
+    content="面向跨境广告投放、远程协作和海外运营场景的在线时区模拟工具。"
+  >
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
-      <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path>
-    </svg>
-    时区模拟器
-  </h2>
+  <div class="site-shell">
+    <main class="page-layout">
+      <section class="tool-section" aria-labelledby="pageTitle">
+        <article class="tool-card">
+          <header class="tool-header">
+            <h1 id="pageTitle">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
+                <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path>
+              </svg>
+              时区模拟器
+            </h1>
+            <p class="tool-intro">
+              快速模拟不同 UTC 区间的日期与时间，减少跨境广告投放和海外协作中的人工换算。
+            </p>
+          </header>
 
-  <p id="currentMode">当前模式: 系统时间模式</p>
+          <p id="currentMode" class="mode-status" aria-live="polite">
+            当前模式: 系统时间模式
+          </p>
 
-  <div class="slider-container">
-    <input type="range" id="timeSlider" min="0" max="1439" step="1">
-    <div class="ticks">
-      <span>0:00</span><span>3:00</span><span>6:00</span><span>9:00</span><span>12:00</span>
-      <span>15:00</span><span>18:00</span><span>21:00</span><span>24:00</span>
-    </div>
-  </div>
+          <div class="slider-container">
+            <label class="sr-only" for="timeSlider">调整模拟时间</label>
+            <input
+              type="range"
+              id="timeSlider"
+              min="0"
+              max="1439"
+              step="1"
+              aria-label="调整模拟时间"
+            >
+            <div class="ticks" aria-hidden="true">
+              <span>0:00</span><span>3:00</span><span>6:00</span>
+              <span>9:00</span><span>12:00</span><span>15:00</span>
+              <span>18:00</span><span>21:00</span><span>24:00</span>
+            </div>
+          </div>
 
-  <div class="control-row">
-    <label class="timezone-control" for="timezoneSelect">
-      <span>我的时区</span>
-      <select id="timezoneSelect" aria-label="选择我的时区"></select>
-    </label>
-    <button id="toggleFreeze">回到系统时间</button>
-  </div>
+          <div class="control-row">
+            <label class="timezone-control" for="timezoneSelect">
+              <span>我的时区</span>
+              <select id="timezoneSelect" aria-label="选择我的时区"></select>
+            </label>
+            <button id="toggleFreeze" type="button">回到系统时间</button>
+          </div>
 
-  <p id="selectedTime"></p>
+          <p id="selectedTime" class="selected-time" aria-live="polite"></p>
 
-  <div class="table-wrapper">
-    <table id="timeTable">
-      <thead>
-        <tr><th>UTC</th><th>代表城市/地区</th><th>Time&#65288;自定义&#65289;</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+          <div class="table-wrapper">
+            <table id="timeTable">
+              <caption class="sr-only">全球主要 UTC 区间时间对照表</caption>
+              <thead>
+                <tr>
+                  <th scope="col">UTC</th>
+                  <th scope="col">代表城市/地区</th>
+                  <th scope="col">Time（自定义）</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="ad-slot ad-slot--inline" aria-hidden="true"></div>
+      </section>
+
+      <aside class="ad-rail" aria-label="广告位预留">
+        <div class="ad-slot ad-slot--sidebar" aria-hidden="true"></div>
+      </aside>
+    </main>
+
+    <section class="content-reserve" aria-hidden="true"></section>
   </div>
 
   <script src="script.js"></script>
